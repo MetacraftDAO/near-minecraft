@@ -60,7 +60,8 @@ public class ExampleMod {
         @SubscribeEvent
         public static void onCommandRegister(RegisterCommandsEvent event) {
             LOGGER.info("Gave RegisterCommandsEvent to VerifyAccountCommand");
-            new VerifyAccountCommand(event.getDispatcher());
+            // new VerifyAccountCommand(event.getDispatcher());
+            new AccountLoginCommand(event.getDispatcher());
             ConfigCommand.register(event.getDispatcher());
         }
     }
