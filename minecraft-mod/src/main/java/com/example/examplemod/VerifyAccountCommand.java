@@ -10,6 +10,9 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Style;
+
 public class VerifyAccountCommand {
     public VerifyAccountCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("near").then(Commands.literal("login").executes((command) -> {
@@ -25,7 +28,11 @@ public class VerifyAccountCommand {
         String encodedParams = Base64.getUrlEncoder().encodeToString(params.getBytes());
         String url = "https://meta-minecraft.netlify.app?params=" + encodedParams;
         // Style style = usl.getStyoe
-        source.sendSuccess(new TextComponent(url), true);
+        TextComponent msg = new TextComponent(url);
+        Style style = msg.getStyle();
+        ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
+        msg.setStyle(style.withClickEvent(click));
+        source.sendSuccess(msg, true);
         return 1;
     }
 }
