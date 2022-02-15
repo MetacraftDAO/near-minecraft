@@ -8,6 +8,7 @@ import java.io.IOException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.net.URI;
 import java.net.http.HttpRequest;
@@ -32,6 +33,11 @@ public class AccountLoginCommand {
 
     public AccountLoginCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("account").then(Commands.literal("login").executes((command) -> {
+            CommandSourceStack source = command.getSource();
+            ServerPlayer player = source.getPlayerOrException();
+            LOGGER.info("Start dispatch the account login comand!");
+            LOGGER.info("Play name: " + player.getName().getString());
+            LOGGER.info("Current player is:" + player.getStringUUID());
             return LoginNearAccount(command.getSource());
         })));
     }
