@@ -49,14 +49,14 @@ public class ExampleMod {
     @SubscribeEvent
     public void onPlayerLogin(PlayerLoggedInEvent event) {
         Player player = event.getPlayer();
-        LOGGER.info("login!!: player " + player.getName().getString() + "with uuid: " + player.getStringUUID());
+        LOGGER.info("login!!: player " + player.getName().getString() + " with uuid: " + player.getStringUUID());
     }
 
     @SubscribeEvent
     public void onPlayerLogout(PlayerLoggedOutEvent event) {
         Player player = event.getPlayer();
         LOGGER.info(
-                "logout!!, logout: player " + player.getName().getString() + "with uuid: " + player.getStringUUID());
+                "logout!!, logout: player " + player.getName().getString() + " with uuid: " + player.getStringUUID());
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the
