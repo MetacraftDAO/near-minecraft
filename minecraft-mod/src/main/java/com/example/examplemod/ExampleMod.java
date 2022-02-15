@@ -22,11 +22,12 @@ import com.example.examplemod.setup.Registration;
 @Mod(ExampleMod.MODID)
 public class ExampleMod {
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public static final String MODID = "examplemod";
 
     public ExampleMod() {
+        ModSetup.setup();
         Registration.init();
 
         IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
