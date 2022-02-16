@@ -1,10 +1,13 @@
 package com.example.examplemod;
 
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -44,6 +47,19 @@ public class ExampleMod {
         LOGGER.info("HELLO from server starting");
     }
 
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerLoggedInEvent event) {
+        Player player = event.getPlayer();
+        LOGGER.info("login!!: player " + player.getName().getString() + " with uuid: " + player.getStringUUID());
+    }
+
+    @SubscribeEvent
+    public void onPlayerLogout(PlayerLoggedOutEvent event) {
+        Player player = event.getPlayer();
+        LOGGER.info(
+                "logout!!, logout: player " + player.getName().getString() + " with uuid: " + player.getStringUUID());
+    }
+
     // You can use EventBusSubscriber to automatically subscribe events on the
     // contained class (this is subscribing to the MOD
     // Event bus for receiving Registry Events)
@@ -62,6 +78,7 @@ public class ExampleMod {
         public static void onCommandRegister(RegisterCommandsEvent event) {
             LOGGER.info("Gave RegisterCommandsEvent to VerifyAccountCommand");
             new VerifyAccountCommand(event.getDispatcher());
+            // new AccountLoginCommand(event.getDispatcher());
             ConfigCommand.register(event.getDispatcher());
         }
     }
