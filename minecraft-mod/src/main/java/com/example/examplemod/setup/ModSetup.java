@@ -16,10 +16,20 @@ import java.util.stream.Collectors;
 
 import com.example.examplemod.worldgen.structures.Structures;
 
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 public class ModSetup {
     private static final Logger LOGGER = LogManager.getLogger();
+
+    public static final CreativeModeTab ITEM_GROUP = new CreativeModeTab("NEAR") {
+        @Override
+        public ItemStack makeIcon() {
+            return new ItemStack(Items.GLASS);
+        }
+    };
 
     public static void init(FMLCommonSetupEvent event) {
         //// Register the setup method for modloading
