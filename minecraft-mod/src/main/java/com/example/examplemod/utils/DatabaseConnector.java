@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 public final class DatabaseConnector {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String VERIFIED_USER_DATABASE_URL = "https://parseapi.back4app.com/classes/VerifiedUser";
-    private static DatabaseConnector INSTANCE;
+    private static DatabaseConnector instance;
 
     private HashMap<String, String> credsHeaders;
 
@@ -51,10 +51,10 @@ public final class DatabaseConnector {
 
     // Singleton factory.
     public static DatabaseConnector getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new DatabaseConnector();
+        if (instance == null) {
+            instance = new DatabaseConnector();
         }
-        return INSTANCE;
+        return instance;
     }
 
     private HttpRequest buildUserQueryRequest(String username) throws URISyntaxException, IOException {
@@ -72,6 +72,7 @@ public final class DatabaseConnector {
         if (credsHeaders != null) {
             return credsHeaders;
         }
+        credsHeaders = new HashMap<String, String>();
         Path homePath = Paths.get(System.getProperty("user.home"));
 
         Path keyPath = Paths.get(homePath.toString(), ".back4app_key");

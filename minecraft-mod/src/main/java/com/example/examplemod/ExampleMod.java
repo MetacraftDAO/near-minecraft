@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.server.command.ConfigCommand;
+import com.example.examplemod.commands.LoginCommand;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -77,7 +78,7 @@ public class ExampleMod {
         public static void onCommandRegister(RegisterCommandsEvent event) {
             LOGGER.info("Gave RegisterCommandsEvent to VerifyAccountCommand");
             new VerifyAccountCommand(event.getDispatcher());
-            // new AccountLoginCommand(event.getDispatcher());
+            new LoginCommand(event.getDispatcher());
             ConfigCommand.register(event.getDispatcher());
         }
     }

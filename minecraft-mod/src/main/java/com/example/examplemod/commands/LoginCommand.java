@@ -13,11 +13,8 @@ public class LoginCommand {
     // Directly reference a log4j logger.
     private DatabaseConnector database;
 
-    public LoginCommand() {
-        database = DatabaseConnector.getInstance();
-    }
-
     public LoginCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
+        database = DatabaseConnector.getInstance();
         dispatcher.register(Commands.literal("login").executes((command) -> {
             return LoginNearAccount(command.getSource());
         }));
