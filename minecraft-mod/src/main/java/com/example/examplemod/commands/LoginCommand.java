@@ -23,11 +23,11 @@ public class LoginCommand {
     private int LoginNearAccount(CommandSourceStack source) throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         String uuid = player.getStringUUID();
-        String username = player.getName().getString();
-        if (database.isUserVerified(username, uuid)) {
+        if (database.isUserVerified(uuid)) {
             source.sendSuccess(new TextComponent("Account verified! Login successfully."), true);
         } else {
-            source.sendSuccess(new TextComponent("Account is not verified, pls type /verify to verify your account."),
+            source.sendSuccess(new TextComponent(
+                    "Account is not verified, pls type /verify to verify your account."),
                     true);
         }
         return 1;

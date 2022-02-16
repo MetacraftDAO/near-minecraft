@@ -9,16 +9,17 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.net.http.HttpRequest.BodyPublisher;
-import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.google.gson.Gson;
 
 // This class is a singleton, use DatabaseConnector.getInstance() to get the instance.
 public final class DatabaseConnector {
@@ -36,13 +37,36 @@ public final class DatabaseConnector {
         }
     }
 
-    public Boolean isUserVerified(String username, String uuid) {
+    // Represents a row corresponding to a user.
+    private class User {
+        class Row {
+            public String objectId;
+            public String createdAt;
+            public String updatedAt;
+            public Boolean isVerified;
+            public String username;
+        }
+
+        public ArrayList<Row> results;
+
+        Boolean isVerified() {
+            if (results == null || results.isEmpty()) {
+                return false;
+            }
+            return results.get(0).isVerified;
+        }
+    }
+
+    public Boolean isUserVerified(String uuid) {
         try {
-            HttpRequest request = buildUserQueryRequest(username);
+            HttpRequest request = buildUserQueryRequest(uuid);
             HttpClient client = HttpClient.newHttpClient();
             HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-            LOGGER.info("Status: " + String.valueOf(response.statusCode()));
-            LOGGER.info("Response body: " + response.body());
+            LOGGER.info("Status: " + String.valueOf(response.statusCode()) + "response: " + response.body());
+
+            Gson gson = new Gson();
+            User user = gson.fromJson(response.body(), User.class);
+            return user.isVerified();
         } catch (URISyntaxException | IOException | InterruptedException err) {
             LOGGER.info("Error:", err.toString());
         }
@@ -57,13 +81,14 @@ public final class DatabaseConnector {
         return instance;
     }
 
-    private HttpRequest buildUserQueryRequest(String username) throws URISyntaxException, IOException {
-        HttpRequest.Builder builder = HttpRequest.newBuilder()
-                .uri(new URI(VERIFIED_USER_DATABASE_URL));
+    private HttpRequest buildUserQueryRequest(String uuid) throws URISyntaxException, IOException {
+        URI uri = new URI(VERIFIED_USER_DATABASE_URL);
+        String query = String.format("where={\"uuid\":\"%s\"&keys=isVerified,username}", uuid);
+        uri = new URI(uri.getScheme(), uri.getAuthority(), uri.getPath(), query, uri.getFragment());
+
+        HttpRequest.Builder builder = HttpRequest.newBuilder().uri(uri);
         HashMap<String, String> headers = getDatabaseHeaders();
         headers.forEach((key, value) -> builder.header(key, value));
-        BodyPublisher publisher = BodyPublishers.ofString(String.format("where={\"username\":\"%s\"}", username));
-        builder.method("GET", publisher);
         return builder.GET().build();
     }
 
