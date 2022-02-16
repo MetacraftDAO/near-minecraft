@@ -19,7 +19,6 @@ import com.example.examplemod.worldgen.structures.Structures;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 
 public class ModSetup {
     private static final Logger LOGGER = LogManager.getLogger();

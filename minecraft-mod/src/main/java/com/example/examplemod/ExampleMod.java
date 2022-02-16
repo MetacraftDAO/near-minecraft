@@ -1,7 +1,5 @@
 package com.example.examplemod;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
@@ -23,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.example.examplemod.setup.ModSetup;
 import com.example.examplemod.setup.Registration;
-import com.example.examplemod.worldgen.structures.Structures;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ExampleMod.MODID)
