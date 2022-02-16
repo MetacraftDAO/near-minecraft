@@ -32,6 +32,12 @@ import net.minecraft.world.level.levelgen.feature.structures.JigsawPlacement;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 public class GlassPrisonStructure extends StructureFeature<JigsawConfiguration> {
+    // These are because we did not position the structure block accurately when
+    // generating the structure metadata.
+    // TODO: Re-generate the strcuture medatada, otherwise this is wrong given
+    // different orientation.
+    public static int TP_OFFSET_X = 6;
+    public static int TP_OFFSET_Z = 11;
 
     public GlassPrisonStructure() {
         super(JigsawConfiguration.CODEC, context -> {

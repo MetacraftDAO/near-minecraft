@@ -3,6 +3,8 @@ package com.example.examplemod.worldgen.structures;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import com.electronwill.nightconfig.core.io.CharsWrapper.Builder;
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.setup.Registration;
@@ -12,6 +14,7 @@ import com.google.common.collect.ImmutableMultimap;
 
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.PlainVillagePools;
@@ -19,6 +22,7 @@ import net.minecraft.data.worldgen.StructureFeatures;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.BiomeCategory;
@@ -31,6 +35,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfigura
 import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class Structures {
     // Static instance of our structure to add to biomes easily.
@@ -131,7 +136,8 @@ public class Structures {
                 BiomeCategory category = biomeEntry.getValue().getBiomeCategory();
                 if (category != BiomeCategory.OCEAN && category != BiomeCategory.THEEND
                         && category != BiomeCategory.NETHER && category != BiomeCategory.NONE) {
-                    associateBiomeToConfiguredStructure(structureToMultimap, CONFIGURED_GLASSPRISON, biomeEntry.getKey());
+                    associateBiomeToConfiguredStructure(structureToMultimap, CONFIGURED_GLASSPRISON,
+                            biomeEntry.getKey());
                 }
                 if (glassPrisonFeature != null) {
                     if (category != BiomeCategory.THEEND && category != BiomeCategory.NETHER
@@ -192,10 +198,12 @@ public class Structures {
     }
 
     /**
-     * Create a copy of a piece generator context with another config. This is used by the structures
+     * Create a copy of a piece generator context with another config. This is used
+     * by the structures
      */
     @NotNull
-    static PieceGeneratorSupplier.Context<JigsawConfiguration> createContextWithConfig(PieceGeneratorSupplier.Context<JigsawConfiguration> context, JigsawConfiguration newConfig) {
+    static PieceGeneratorSupplier.Context<JigsawConfiguration> createContextWithConfig(
+            PieceGeneratorSupplier.Context<JigsawConfiguration> context, JigsawConfiguration newConfig) {
         return new PieceGeneratorSupplier.Context<>(
                 context.chunkGenerator(),
                 context.biomeSource(),
@@ -205,7 +213,30 @@ public class Structures {
                 context.heightAccessor(),
                 context.validBiome(),
                 context.structureManager(),
-                context.registryAccess()
-        );
+                context.registryAccess());
+    }
+
+    @Nullable
+    public static BlockPos findNearestStruct(ResourceLocation structureName, Player player) {
+        StructureFeature<?> structure = ForgeRegistries.STRUCTURE_FEATURES.getValue(structureName);
+        if (structure == null) {
+            ExampleMod.LOGGER.error("Cannot find structure feature from Registry");
+            return null;
+        }
+
+        int searchRange = 200;
+        boolean findUnexplored = false;
+
+        ServerLevel worldIn = (ServerLevel) player.level;
+        BlockPos structurePos = worldIn.findNearestMapFeature(structure, player.blockPosition(), searchRange,
+                findUnexplored);
+        if (structurePos == null) {
+            ExampleMod.LOGGER.error("Cannot find structure position");
+            return null;
+        }
+
+        ExampleMod.LOGGER.info("Found nearest structure at " + structurePos.getX() + ", " + structurePos.getY() + ", "
+                + structurePos.getZ());
+        return structurePos;
     }
 }

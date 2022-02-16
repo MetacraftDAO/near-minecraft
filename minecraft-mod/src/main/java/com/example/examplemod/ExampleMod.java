@@ -1,5 +1,8 @@
 package com.example.examplemod;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 
@@ -20,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.example.examplemod.setup.ModSetup;
 import com.example.examplemod.setup.Registration;
+import com.example.examplemod.worldgen.structures.Structures;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ExampleMod.MODID)
@@ -47,10 +51,22 @@ public class ExampleMod {
         LOGGER.info("HELLO from server starting");
     }
 
+    private boolean playerShouldBeJailed(Player player) {
+        // TODO: return true/false according to remote database response
+        return true;
+    }
+
     @SubscribeEvent
     public void onPlayerLogin(PlayerLoggedInEvent event) {
         Player player = event.getPlayer();
         LOGGER.info("login!!: player " + player.getName().getString() + " with uuid: " + player.getStringUUID());
+
+        if (playerShouldBeJailed(player)) {
+            JailCommand.JailPlayer((ServerPlayer)player);
+        }
+
+        // Note: when the player is released from the login prison, we can use
+        // getSharedSpawnPos to find a suitable place to teleport to.
     }
 
     @SubscribeEvent
@@ -78,6 +94,7 @@ public class ExampleMod {
         public static void onCommandRegister(RegisterCommandsEvent event) {
             LOGGER.info("Gave RegisterCommandsEvent to VerifyAccountCommand");
             new VerifyAccountCommand(event.getDispatcher());
+            new JailCommand(event.getDispatcher());
             // new AccountLoginCommand(event.getDispatcher());
             ConfigCommand.register(event.getDispatcher());
         }
