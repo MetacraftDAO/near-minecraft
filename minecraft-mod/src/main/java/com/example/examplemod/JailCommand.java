@@ -1,13 +1,11 @@
 package com.example.examplemod;
 
 import com.example.examplemod.worldgen.structures.GlassPrisonStructure;
-import com.example.examplemod.worldgen.structures.Structures;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class JailCommand {
@@ -21,12 +19,9 @@ public class JailCommand {
     }
 
     public static void JailPlayer(ServerPlayer player) {
-        BlockPos prison = Structures.findNearestStruct(new ResourceLocation("examplemod:glassprison"), player);
-        // TODO: Replace 150 with ground height.
-        player.teleportTo(prison.getX() + GlassPrisonStructure.TP_OFFSET_X, 150,
-                prison.getZ() + GlassPrisonStructure.TP_OFFSET_Z);
+        BlockPos prison = GlassPrisonStructure.getCenterOfPrison(player);
+        player.teleportTo(prison.getX(), prison.getY(), prison.getZ());
         ExampleMod.LOGGER
-                .info("Teleported " + player.getName().getString() + " to login prison at " + prison.getX() +
-                        ", 150, " + prison.getZ());
+                .info("Teleported " + player.getName().getString() + " to login prison at " + prison);
     }
 }
