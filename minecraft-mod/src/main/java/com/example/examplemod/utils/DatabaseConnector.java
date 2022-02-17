@@ -37,7 +37,7 @@ public final class DatabaseConnector {
         }
     }
 
-    // Represents a row corresponding to a user.
+    // Represents a row in database for a user.
     private class User {
         class Row {
             public String objectId;

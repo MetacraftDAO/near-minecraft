@@ -55,7 +55,7 @@ public class ExampleMod {
     }
 
     private boolean playerShouldBeJailed(Player player) {
-        return database.isUserVerified(player.getStringUUID());
+        return !database.isUserVerified(player.getStringUUID());
     }
 
     @SubscribeEvent
