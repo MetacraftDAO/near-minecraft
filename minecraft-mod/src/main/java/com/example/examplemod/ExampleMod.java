@@ -15,12 +15,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.server.command.ConfigCommand;
+import com.example.examplemod.commands.LoginCommand;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.example.examplemod.setup.ModSetup;
 import com.example.examplemod.setup.Registration;
+
+import com.example.examplemod.utils.DatabaseConnector;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ExampleMod.MODID)
@@ -29,10 +32,13 @@ public class ExampleMod {
     public static final Logger LOGGER = LogManager.getLogger();
 
     public static final String MODID = "examplemod";
+    private DatabaseConnector database;
 
     public ExampleMod() {
         ModSetup.setup();
         Registration.init();
+
+        database = DatabaseConnector.getInstance();
 
         IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
         modbus.addListener(ModSetup::init);
@@ -49,8 +55,7 @@ public class ExampleMod {
     }
 
     private boolean playerShouldBeJailed(Player player) {
-        // TODO: return true/false according to remote database response
-        return true;
+        return database.isUserVerified(player.getStringUUID());
     }
 
     @SubscribeEvent
@@ -59,7 +64,7 @@ public class ExampleMod {
         LOGGER.info("login!!: player " + player.getName().getString() + " with uuid: " + player.getStringUUID());
 
         if (playerShouldBeJailed(player)) {
-            JailCommand.JailPlayer((ServerPlayer)player);
+            JailCommand.JailPlayer((ServerPlayer) player);
         }
 
         // Note: when the player is released from the login prison, we can use
@@ -91,8 +96,9 @@ public class ExampleMod {
         public static void onCommandRegister(RegisterCommandsEvent event) {
             LOGGER.info("Gave RegisterCommandsEvent to VerifyAccountCommand");
             new VerifyAccountCommand(event.getDispatcher());
+            new LoginCommand(event.getDispatcher());
+
             new JailCommand(event.getDispatcher());
-            // new AccountLoginCommand(event.getDispatcher());
             ConfigCommand.register(event.getDispatcher());
         }
     }
