@@ -5,6 +5,7 @@ import java.util.Base64;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
@@ -12,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 
 public class VerifyAccountCommand {
     public VerifyAccountCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -31,7 +33,7 @@ public class VerifyAccountCommand {
         TextComponent msg = new TextComponent(url);
         Style style = msg.getStyle();
         ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
-        msg.setStyle(style.withClickEvent(click));
+        msg.setStyle(style.withClickEvent(click).withColor(TextColor.fromLegacyFormat(ChatFormatting.DARK_BLUE)));
         source.sendSuccess(msg, true);
         return 1;
     }
