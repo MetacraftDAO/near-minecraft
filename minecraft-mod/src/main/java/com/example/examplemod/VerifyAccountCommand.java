@@ -15,9 +15,9 @@ import net.minecraft.network.chat.Style;
 
 public class VerifyAccountCommand {
     public VerifyAccountCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("near").then(Commands.literal("login").executes((command) -> {
+        dispatcher.register(Commands.literal("verify").executes((command) -> {
             return VerifyNearAccount(command.getSource());
-        })));
+        }));
     }
 
     private int VerifyNearAccount(CommandSourceStack source) throws CommandSyntaxException {
@@ -26,7 +26,7 @@ public class VerifyAccountCommand {
         String username = player.getName().getString();
         String params = "uuid=" + uuid + "&username=" + username;
         String encodedParams = Base64.getUrlEncoder().encodeToString(params.getBytes());
-        String url = "https://meta-minecraft.netlify.app?params=" + encodedParams;
+        String url = "https://metacraft.netlify.app/verify?params=" + encodedParams;
         // Style style = usl.getStyoe
         TextComponent msg = new TextComponent(url);
         Style style = msg.getStyle();
