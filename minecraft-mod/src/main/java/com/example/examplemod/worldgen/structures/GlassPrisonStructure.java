@@ -110,6 +110,10 @@ public class GlassPrisonStructure extends StructureFeature<JigsawConfiguration> 
 
     @Nullable
     public static BlockPos getCenterOfPrison(Player player) {
+        if (prisons.isEmpty()) {
+            return null;
+        }
+
         ServerLevel world = (ServerLevel) player.level;
 
         // Choose a random prison. This can also be deterministic.

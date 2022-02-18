@@ -21,6 +21,10 @@ public class JailCommand {
 
     public static void JailPlayer(ServerPlayer player) {
         BlockPos prison = GlassPrisonStructure.getCenterOfPrison(player);
+        if (prison == null) {
+            ExampleMod.LOGGER.info("Cannot find prison to put player into");
+            return;
+        }
         player.teleportTo(prison.getX(), prison.getY(), prison.getZ());
         ExampleMod.LOGGER
                 .info("Teleported " + player.getName().getString() + " to login prison at " + prison);
