@@ -15,7 +15,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.server.command.ConfigCommand;
+
+import com.example.examplemod.commands.JailCommand;
 import com.example.examplemod.commands.LoginCommand;
+import com.example.examplemod.commands.VerifyAccountCommand;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -97,7 +100,6 @@ public class ExampleMod {
             LOGGER.info("Gave RegisterCommandsEvent to VerifyAccountCommand");
             new VerifyAccountCommand(event.getDispatcher());
             new LoginCommand(event.getDispatcher());
-
             new JailCommand(event.getDispatcher());
             ConfigCommand.register(event.getDispatcher());
         }

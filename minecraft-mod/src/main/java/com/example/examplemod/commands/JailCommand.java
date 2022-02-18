@@ -1,5 +1,6 @@
-package com.example.examplemod;
+package com.example.examplemod.commands;
 
+import com.example.examplemod.ExampleMod;
 import com.example.examplemod.worldgen.structures.GlassPrisonStructure;
 import com.mojang.brigadier.CommandDispatcher;
 

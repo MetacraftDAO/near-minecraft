@@ -1,4 +1,4 @@
-package com.example.examplemod;
+package com.example.examplemod.commands;
 
 import java.util.Base64;
 
@@ -18,18 +18,17 @@ import net.minecraft.network.chat.TextColor;
 public class VerifyAccountCommand {
     public VerifyAccountCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("verify").executes((command) -> {
-            return VerifyNearAccount(command.getSource());
+            return VerifyAccount(command.getSource());
         }));
     }
 
-    private int VerifyNearAccount(CommandSourceStack source) throws CommandSyntaxException {
+    private int VerifyAccount(CommandSourceStack source) throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         String uuid = player.getStringUUID();
         String username = player.getName().getString();
         String params = "uuid=" + uuid + "&username=" + username;
         String encodedParams = Base64.getUrlEncoder().encodeToString(params.getBytes());
         String url = "https://metacraft.netlify.app/verify?params=" + encodedParams;
-        // Style style = usl.getStyoe
         TextComponent msg = new TextComponent(url);
         Style style = msg.getStyle();
         ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
