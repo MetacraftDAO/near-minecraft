@@ -17,6 +17,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.server.command.ConfigCommand;
 
 import com.example.examplemod.commands.JailCommand;
+import com.example.examplemod.commands.JailbreakCommand;
 import com.example.examplemod.commands.LoginCommand;
 import com.example.examplemod.commands.VerifyAccountCommand;
 
@@ -97,10 +98,13 @@ public class ExampleMod {
     public static class CommandEvents {
         @SubscribeEvent
         public static void onCommandRegister(RegisterCommandsEvent event) {
-            LOGGER.info("Gave RegisterCommandsEvent to VerifyAccountCommand");
             new VerifyAccountCommand(event.getDispatcher());
             new LoginCommand(event.getDispatcher());
+
+            // Only for testing
             new JailCommand(event.getDispatcher());
+            new JailbreakCommand(event.getDispatcher());
+
             ConfigCommand.register(event.getDispatcher());
         }
     }
