@@ -33,7 +33,7 @@ public class VerifyAccountCommand {
         TextComponent msg = new TextComponent(url);
         Style style = msg.getStyle();
         ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
-        msg.setStyle(style.withClickEvent(click).withColor(TextColor.fromLegacyFormat(ChatFormatting.DARK_BLUE)));
+        msg.setStyle(style.withClickEvent(click).withColor(TextColor.fromLegacyFormat(ChatFormatting.YELLOW)));
         source.sendSuccess(msg, true);
         return 1;
     }
