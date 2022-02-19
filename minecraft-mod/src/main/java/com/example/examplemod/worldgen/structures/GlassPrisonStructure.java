@@ -110,15 +110,18 @@ public class GlassPrisonStructure extends StructureFeature<JigsawConfiguration> 
 
     @Nullable
     public static BlockPos getCenterOfPrison(Player player) {
-        if (prisons.isEmpty()) {
-            return null;
-        }
-
         ServerLevel world = (ServerLevel) player.level;
 
-        // Choose a random prison. This can also be deterministic.
-        Random rand = new Random();
-        BlockPos corner = prisons.get(rand.nextInt(prisons.size()));
+        BlockPos corner = getSavedPrisonPos(world);
+        if (corner != null) {
+            ExampleMod.LOGGER.info("Loaded default prison pos: " + corner);
+        } else if (!prisons.isEmpty()) {
+            corner = prisons.get(0);
+            ExampleMod.LOGGER.info("Using generated prison pos: " + corner);
+            savePrisonPos(world);
+        } else {
+            return null;
+        }
 
         int y;
         int x = corner.getX();
@@ -147,5 +150,26 @@ public class GlassPrisonStructure extends StructureFeature<JigsawConfiguration> 
         }
         ExampleMod.LOGGER.error("Failed to find orientation of Glass Prison");
         return null;
+    }
+
+    @Nullable
+    private static BlockPos getSavedPrisonPos(ServerLevel world) {
+        PrisonSavedData saved_data = PrisonSavedData.get(world);
+        int pos[] = saved_data.getDefaultPrisonPos();
+        if (pos == null) {
+            savePrisonPos(world);
+            return null;
+        }
+        return new BlockPos(pos[0], pos[1], pos[2]);
+    }
+
+    public static void savePrisonPos(ServerLevel world) {
+        if (prisons.isEmpty()) {
+            return;
+        }
+        PrisonSavedData saved_data = PrisonSavedData.get(world);
+        BlockPos p = prisons.get(0);
+        int new_pos[] = { p.getX(), p.getY(), p.getZ() };
+        saved_data.setDefaultPrisonPos(new_pos);
     }
 }

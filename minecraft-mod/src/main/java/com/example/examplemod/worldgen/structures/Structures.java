@@ -51,8 +51,8 @@ public class Structures {
         setupMapSpacingAndLand(
                 Registration.GLASSPRISON.get(),
                 new StructureFeatureConfiguration(
-                        20, // Average distance in chunks
-                        10, // Min distance in chunks
+                        10, // Average distance in chunks
+                        5, // Min distance in chunks
                         1234567890),
                 false);
     }
