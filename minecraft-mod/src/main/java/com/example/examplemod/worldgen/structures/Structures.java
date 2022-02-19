@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import com.electronwill.nightconfig.core.io.CharsWrapper.Builder;
 import com.example.examplemod.ExampleMod;
 import com.example.examplemod.setup.Registration;
 import com.google.common.collect.HashMultimap;
@@ -18,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.PlainVillagePools;
-import net.minecraft.data.worldgen.StructureFeatures;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
