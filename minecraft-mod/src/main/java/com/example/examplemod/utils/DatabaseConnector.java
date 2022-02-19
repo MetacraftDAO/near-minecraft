@@ -45,6 +45,8 @@ public final class DatabaseConnector {
             public String updatedAt;
             public Boolean isVerified;
             public String username;
+            public String uuid;
+            public String nearAccountId;
         }
 
         public ArrayList<Row> results;
@@ -62,10 +64,16 @@ public final class DatabaseConnector {
             HttpRequest request = buildUserQueryRequest(uuid);
             HttpClient client = HttpClient.newHttpClient();
             HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-            LOGGER.info("Status: " + String.valueOf(response.statusCode()) + "response: " + response.body());
+            LOGGER.info("Status: " + String.valueOf(response.statusCode()) + " response: " + response.body());
+
+            if (response.statusCode() != 200) {
+                LOGGER.info("Error in connecting database, user is not verified.");
+                return false;
+            }
 
             Gson gson = new Gson();
             User user = gson.fromJson(response.body(), User.class);
+            LOGGER.info(user.isVerified() ? "user is verified." : "user is not verified.");
             return user.isVerified();
         } catch (URISyntaxException | IOException | InterruptedException err) {
             LOGGER.info("Error:", err.toString());
@@ -83,7 +91,7 @@ public final class DatabaseConnector {
 
     private HttpRequest buildUserQueryRequest(String uuid) throws URISyntaxException, IOException {
         URI uri = new URI(VERIFIED_USER_DATABASE_URL);
-        String query = String.format("where={\"uuid\":\"%s\"&keys=isVerified,username}", uuid);
+        String query = String.format("where={\"uuid\":\"%s\"}", uuid);
         uri = new URI(uri.getScheme(), uri.getAuthority(), uri.getPath(), query, uri.getFragment());
 
         HttpRequest.Builder builder = HttpRequest.newBuilder().uri(uri);
