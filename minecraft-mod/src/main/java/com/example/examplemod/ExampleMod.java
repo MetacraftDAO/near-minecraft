@@ -71,6 +71,7 @@ public class ExampleMod {
         String uuid = player.getStringUUID();
         LOGGER.info("login!!: player " + player.getName().getString() + " with uuid: " + uuid);
         if (database.isUserVerified(uuid)) {
+            // Start recording play time.
             tiktok.tik(uuid);
         }
 
@@ -87,6 +88,7 @@ public class ExampleMod {
         Player player = event.getPlayer();
         LOGGER.info(
                 "logout!!, logout: player " + player.getName().getString() + " with uuid: " + player.getStringUUID());
+        // End recording play time.
         tiktok.tok(player.getStringUUID());
     }
 
