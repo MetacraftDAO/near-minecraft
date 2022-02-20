@@ -77,10 +77,6 @@ public final class DatabaseConnector {
         return user.nearAccountId;
     }
 
-    public static String getUserNearAccountId(String uuid) {
-        return "";
-    }
-
     // Singleton factory.
     public static DatabaseConnector getInstance() {
         if (instance == null) {
