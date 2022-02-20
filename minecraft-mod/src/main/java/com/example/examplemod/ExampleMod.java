@@ -29,6 +29,7 @@ import com.example.examplemod.setup.Registration;
 
 import com.example.examplemod.utils.DatabaseConnector;
 import com.example.examplemod.utils.TikTokTime;
+import com.example.examplemod.worldgen.structures.GlassPrisonStructure;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ExampleMod.MODID)
@@ -76,7 +77,7 @@ public class ExampleMod {
         }
 
         if (playerShouldBeJailed(player)) {
-            JailCommand.JailPlayer((ServerPlayer) player);
+            GlassPrisonStructure.sendToJail((ServerPlayer) player);
         }
 
         // Note: when the player is released from the login prison, we can use

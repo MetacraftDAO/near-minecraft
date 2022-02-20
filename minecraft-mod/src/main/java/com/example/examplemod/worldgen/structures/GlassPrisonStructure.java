@@ -16,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.block.Blocks;
@@ -170,5 +171,24 @@ public class GlassPrisonStructure extends StructureFeature<JigsawConfiguration> 
         BlockPos p = prisons.get(0);
         int new_pos[] = { p.getX(), p.getY(), p.getZ() };
         saved_data.setDefaultPrisonPos(new_pos);
+    }
+
+    public static void sendToJail(ServerPlayer player) {
+        BlockPos prison = getCenterOfPrison(player);
+        if (prison == null) {
+            ExampleMod.LOGGER.info("Cannot find prison to put player into");
+            return;
+        }
+        player.teleportTo(prison.getX(), prison.getY(), prison.getZ());
+        ExampleMod.LOGGER
+                .info("Teleported " + player.getName().getString() + " to login prison at " + prison);
+    }
+
+    public static void releaseFromJail(ServerPlayer player) {
+        ServerLevel level = (ServerLevel) player.level;
+        BlockPos dest = level.getSharedSpawnPos();
+        player.teleportTo(dest.getX(), dest.getY(), dest.getZ());
+        ExampleMod.LOGGER
+                .info("Teleported " + player.getName().getString() + " from prison to " + dest);
     }
 }
