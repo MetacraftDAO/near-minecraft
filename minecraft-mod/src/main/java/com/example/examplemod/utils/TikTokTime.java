@@ -50,24 +50,25 @@ public class TikTokTime {
         }
 
         Instant tik;
-        if (playTime.tikTime == null) {
+        if (playTime.tikTime == null || playTime.tikTime == "") {
             LOGGER.info(("No tik time is set yet."));
-            tik = Instant.now();
-        } else {
-            tik = Instant.parse(playTime.tikTime);
+            // accumulated play time is the same as before.
+            LOGGER.info(String.format("Write nearAccountId: %s, tikTime: %s, tokTime: %s, accumulatedPlayTime: %d",
+                    user.nearAccountId, "", "", playTime.accumulatedPlayTime));
+            return db.updatePlayTime(playTime.objectId, "", "", playTime.accumulatedPlayTime);
         }
+        tik = Instant.parse(playTime.tikTime);
         Instant tok = Instant.now();
         if (!tik.isBefore(tok)) {
             LOGGER.atError().log("Error! tik time is in the future!");
             tik = tok;
         }
-
         // Calculate accumulated time.
         Duration timeElapsed = Duration.between(tik, tok);
         long accumulatedPlayTime = playTime.accumulatedPlayTime + timeElapsed.getSeconds();
 
         LOGGER.info(String.format("Write nearAccountId: %s, tikTime: %s, tokTime: %s, accumulatedPlayTime: %d",
-                user.nearAccountId, tik.toString(), tok.toString(), accumulatedPlayTime));
-        return db.updatePlayTime(playTime.objectId, tik.toString(), tok.toString(), accumulatedPlayTime);
+                user.nearAccountId, "", "", accumulatedPlayTime));
+        return db.updatePlayTime(playTime.objectId, "", "", accumulatedPlayTime);
     }
 }
