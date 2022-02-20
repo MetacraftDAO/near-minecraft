@@ -13,13 +13,13 @@ final public class DatabaseDataWrapper {
         public String nearAccountId;
     }
 
-    public static class PlayTimeAccount {
+    public static class PlayTime {
         public String objectId;
         public String createdAt;
         public String updatedAt;
         public String tikTime;
         public String tokTime;
-        public Integer accumulatedPlayTime;
+        public long accumulatedPlayTime;
     }
 
     public static class VerifiedUserRows {
@@ -30,10 +30,10 @@ final public class DatabaseDataWrapper {
         }
     }
 
-    public static class PlayTimeAccountRows {
-        public ArrayList<PlayTimeAccount> results;
+    public static class PlayTimeRows {
+        public ArrayList<PlayTime> results;
 
-        PlayTimeAccount getFirst() {
+        PlayTime getFirst() {
             return (results == null || results.isEmpty()) ? null : results.get(0);
         }
     }

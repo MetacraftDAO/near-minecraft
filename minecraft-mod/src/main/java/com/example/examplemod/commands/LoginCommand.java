@@ -1,6 +1,7 @@
 package com.example.examplemod.commands;
 
 import com.example.examplemod.utils.DatabaseConnector;
+import com.example.examplemod.utils.TikTokTime;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
@@ -12,9 +13,11 @@ import net.minecraft.server.level.ServerPlayer;
 public class LoginCommand {
     // Directly reference a log4j logger.
     private DatabaseConnector database;
+    private TikTokTime tiktok;
 
     public LoginCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         database = DatabaseConnector.getInstance();
+        tiktok = new TikTokTime(database);
         dispatcher.register(Commands.literal("login").executes((command) -> {
             return LoginNearAccount(command.getSource());
         }));
@@ -25,6 +28,7 @@ public class LoginCommand {
         String uuid = player.getStringUUID();
         if (database.isUserVerified(uuid)) {
             source.sendSuccess(new TextComponent("Account verified! Login successfully."), true);
+            tiktok.tik(uuid);
         } else {
             source.sendSuccess(new TextComponent(
                     "Account is not verified, pls type /verify to verify your account."),

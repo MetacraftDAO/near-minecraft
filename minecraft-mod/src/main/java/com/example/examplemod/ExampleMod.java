@@ -28,6 +28,7 @@ import com.example.examplemod.setup.ModSetup;
 import com.example.examplemod.setup.Registration;
 
 import com.example.examplemod.utils.DatabaseConnector;
+import com.example.examplemod.utils.TikTokTime;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ExampleMod.MODID)
@@ -37,12 +38,14 @@ public class ExampleMod {
 
     public static final String MODID = "examplemod";
     private DatabaseConnector database;
+    private TikTokTime tiktok;
 
     public ExampleMod() {
         ModSetup.setup();
         Registration.init();
 
         database = DatabaseConnector.getInstance();
+        tiktok = new TikTokTime(database);
 
         IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
         modbus.addListener(ModSetup::init);
@@ -65,7 +68,11 @@ public class ExampleMod {
     @SubscribeEvent
     public void onPlayerLogin(PlayerLoggedInEvent event) {
         Player player = event.getPlayer();
-        LOGGER.info("login!!: player " + player.getName().getString() + " with uuid: " + player.getStringUUID());
+        String uuid = player.getStringUUID();
+        LOGGER.info("login!!: player " + player.getName().getString() + " with uuid: " + uuid);
+        if (database.isUserVerified(uuid)) {
+            tiktok.tik(uuid);
+        }
 
         if (playerShouldBeJailed(player)) {
             JailCommand.JailPlayer((ServerPlayer) player);
@@ -80,6 +87,7 @@ public class ExampleMod {
         Player player = event.getPlayer();
         LOGGER.info(
                 "logout!!, logout: player " + player.getName().getString() + " with uuid: " + player.getStringUUID());
+        tiktok.tok(player.getStringUUID());
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the
