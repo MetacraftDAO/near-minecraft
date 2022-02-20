@@ -2,6 +2,7 @@ package com.example.examplemod.commands;
 
 import com.example.examplemod.utils.DatabaseConnector;
 import com.example.examplemod.utils.TikTokTime;
+import com.example.examplemod.worldgen.structures.GlassPrisonStructure;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
@@ -28,6 +29,8 @@ public class LoginCommand {
         String uuid = player.getStringUUID();
         if (database.isUserVerified(uuid)) {
             source.sendSuccess(new TextComponent("Account verified! Login successfully."), true);
+            GlassPrisonStructure.releaseFromJail(player);
+            // Teleporting takes time, so start tik after releaseFromJail.
             tiktok.tik(uuid);
         } else {
             source.sendSuccess(new TextComponent(
