@@ -12,7 +12,6 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
@@ -20,6 +19,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
+import com.example.examplemod.utils.DatabaseDataWrapper.VerifiedUser;
+import com.example.examplemod.utils.DatabaseDataWrapper.VerifiedUserRows;
 
 // This class is a singleton, use DatabaseConnector.getInstance() to get the instance.
 public final class DatabaseConnector {
@@ -37,29 +38,7 @@ public final class DatabaseConnector {
         }
     }
 
-    // Represents a row in database for a user.
-    private class User {
-        class Row {
-            public String objectId;
-            public String createdAt;
-            public String updatedAt;
-            public Boolean isVerified;
-            public String username;
-            public String uuid;
-            public String nearAccountId;
-        }
-
-        public ArrayList<Row> results;
-
-        Boolean isVerified() {
-            if (results == null || results.isEmpty()) {
-                return false;
-            }
-            return results.get(0).isVerified;
-        }
-    }
-
-    public Boolean isUserVerified(String uuid) {
+    public VerifiedUser getVerifiedUser(String uuid) {
         try {
             HttpRequest request = buildUserQueryRequest(uuid);
             HttpClient client = HttpClient.newHttpClient();
@@ -68,17 +47,38 @@ public final class DatabaseConnector {
 
             if (response.statusCode() != 200) {
                 LOGGER.info("Error in connecting database, user is not verified.");
-                return false;
+                return null;
             }
 
             Gson gson = new Gson();
-            User user = gson.fromJson(response.body(), User.class);
-            LOGGER.info(user.isVerified() ? "user is verified." : "user is not verified.");
-            return user.isVerified();
-        } catch (URISyntaxException | IOException | InterruptedException err) {
+            VerifiedUserRows users = gson.fromJson(response.body(), VerifiedUserRows.class);
+            return users.getFirst();
+        } catch (IOException | URISyntaxException | InterruptedException err) {
             LOGGER.info("Error:", err.toString());
+            return null;
         }
-        return true;
+    }
+
+    public Boolean isUserVerified(String uuid) {
+        VerifiedUser user = getVerifiedUser(uuid);
+        if (user == null)
+            return false;
+
+        LOGGER.info(user.isVerified ? "user is verified." : "user is not verified.");
+        return user.isVerified;
+    }
+
+    public String getNearAccountId(String uuid) {
+        VerifiedUser user = getVerifiedUser(uuid);
+        if (user == null)
+            return null;
+
+        LOGGER.info("user's near account id: " + user.nearAccountId);
+        return user.nearAccountId;
+    }
+
+    public static String getUserNearAccountId(String uuid) {
+        return "";
     }
 
     // Singleton factory.
