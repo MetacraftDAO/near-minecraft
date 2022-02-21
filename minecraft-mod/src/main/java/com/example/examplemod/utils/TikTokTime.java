@@ -50,7 +50,7 @@ public class TikTokTime {
         }
 
         Instant tik;
-        if (playTime.tikTime == null || playTime.tikTime == "") {
+        if (playTime.tikTime == null || playTime.tikTime.isEmpty()) {
             LOGGER.info(("No tik time is set yet."));
             // accumulated play time is the same as before.
             LOGGER.info(String.format("Write nearAccountId: %s, tikTime: %s, tokTime: %s, accumulatedPlayTime: %d",
