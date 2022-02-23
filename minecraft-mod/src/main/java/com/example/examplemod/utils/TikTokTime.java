@@ -29,6 +29,10 @@ public class TikTokTime {
     public boolean tik(String uuid) {
         LOGGER.info("Start tik!");
         VerifiedUser user = db.getVerifiedUser(uuid);
+        if (user == null) {
+            LOGGER.info("Failed to tik since user is not verified");
+            return false;
+        }
         PlayTime playTime = getPlayTimeIfNeeded(user.nearAccountId);
         if (playTime == null) {
             LOGGER.atError().log("Failed to create PlayTime object!");
@@ -43,6 +47,10 @@ public class TikTokTime {
     public boolean tok(String uuid) {
         LOGGER.info("Start tok!");
         VerifiedUser user = db.getVerifiedUser(uuid);
+        if (user == null) {
+            LOGGER.info("Failed to tok since user is not verified");
+            return false;
+        }
         PlayTime playTime = getPlayTimeIfNeeded(user.nearAccountId);
         if (playTime == null) {
             LOGGER.atError().log("Failed to create PlayTime object!");
